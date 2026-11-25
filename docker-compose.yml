@@ -1,0 +1,62 @@
+services:
+  pgvector:
+    image: pgvector/pgvector:pg16
+    container_name: voltflex-pgvector
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-voltflex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-voltflex_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-voltflex_uk}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U voltflex -d voltflex_uk"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.17.2
+    container_name: voltflex-mlflow
+    command: >
+      mlflow server
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+      --host 0.0.0.0
+      --port 5000
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlflow
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: voltflex-api
+    environment:
+      VOLTFLEX_DB_PATH: /app/data/processed/voltflex.duckdb
+      VOLTFLEX_QUARANTINE_DIR: /app/data/quarantine
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      DATABASE_URL: postgresql://voltflex:voltflex_dev@pgvector:5432/voltflex_uk
+      VOLTFLEX_MPAN_HMAC_SECRET: ${VOLTFLEX_MPAN_HMAC_SECRET:-voltflex-uk-gdpr-dev-key}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./docs:/app/docs
+      - ./mlruns:/app/mlruns
+    depends_on:
+      pgvector:
+        condition: service_healthy
+      mlflow:
+        condition: service_started
+
+volumes:
+  pgvector_data:

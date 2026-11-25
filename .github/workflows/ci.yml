@@ -1,0 +1,33 @@
+name: VoltFlex UK CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          uv venv --python 3.12
+          uv pip install -e ".[dev]" streamlit tabulate
+
+      - name: Lint with ruff
+        run: uv run ruff check src tests
+
+      - name: Run pipeline smoke test
+        run: uv run python -m src.run_pipeline
+
+      - name: Run pytest suite
+        run: uv run pytest -v

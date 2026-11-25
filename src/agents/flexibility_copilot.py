@@ -4,13 +4,17 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, TypedDict
 
 import numpy as np
 from langgraph.graph import END, START, StateGraph
+from pypdf import PdfReader
 from rank_bm25 import BM25Okapi
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
+DEFAULT_REGULATORY_DOCS_DIR = Path("data/regulatory_docs")
 
 G98_SINGLE_PHASE_LIMIT_KW = 3.68
 G98_SINGLE_PHASE_LIMIT_AMPS = 16.0
@@ -108,11 +112,139 @@ def _tokenize(text: str) -> list[str]:
     return re.findall(r"[a-z0-9]+(?:\.[0-9]+)?", text.lower())
 
 
+def _parse_markdown_sections(content: str, stem: str) -> list[RegulatoryDocument]:
+    """Parse structured markdown regulatory sections (`## [DOC-ID] Title`) or fallback chunks."""
+    section_pattern = re.compile(r"^##\s+\[([A-Z0-9-]+)\]\s+(.+)$", re.MULTILINE)
+    matches = list(section_pattern.finditer(content))
+    if not matches:
+        clean = " ".join(content.split())
+        if not clean:
+            return []
+        doc_tag = re.sub(r"[^A-Z0-9]+", "-", stem.upper()).strip("-")[:20] or "REG"
+        return [
+            RegulatoryDocument(
+                doc_id=f"{doc_tag}-01",
+                title=stem.replace("_", " ").title(),
+                authority="NESO / Ofgem / ENA",
+                text=clean,
+            )
+        ]
+
+    docs: list[RegulatoryDocument] = []
+    for idx, match in enumerate(matches):
+        doc_id = match.group(1).strip()
+        title = match.group(2).strip()
+        start = match.end()
+        end = matches[idx + 1].start() if idx + 1 < len(matches) else len(content)
+        body = content[start:end].strip()
+
+        authority = "NESO / Ofgem / ENA"
+        body_lines = []
+        for line in body.splitlines():
+            if line.lower().startswith("authority:"):
+                authority = line.split(":", 1)[1].strip()
+            else:
+                body_lines.append(line)
+        text = " ".join(" ".join(body_lines).split())
+        if text:
+            docs.append(
+                RegulatoryDocument(
+                    doc_id=doc_id,
+                    title=title,
+                    authority=authority,
+                    text=text,
+                )
+            )
+    return docs
+
+
+def _chunk_plain_text(text: str, stem: str, chunk_chars: int = 800) -> list[RegulatoryDocument]:
+    """Split unstructured .txt or .pdf text into indexed RegulatoryDocument chunks."""
+    clean = " ".join(text.split())
+    if not clean:
+        return []
+    doc_tag = re.sub(r"[^A-Z0-9]+", "-", stem.upper()).strip("-")[:16] or "REG"
+    docs: list[RegulatoryDocument] = []
+    words = clean.split(" ")
+    buf: list[str] = []
+    buf_len = 0
+    part = 1
+    for word in words:
+        buf.append(word)
+        buf_len += len(word) + 1
+        if buf_len >= chunk_chars:
+            docs.append(
+                RegulatoryDocument(
+                    doc_id=f"{doc_tag}-{part:02d}",
+                    title=f"{stem.replace('_', ' ').title()} (Part {part})",
+                    authority="Statutory UK Regulatory Document",
+                    text=" ".join(buf),
+                )
+            )
+            buf = []
+            buf_len = 0
+            part += 1
+    if buf:
+        docs.append(
+            RegulatoryDocument(
+                doc_id=f"{doc_tag}-{part:02d}",
+                title=f"{stem.replace('_', ' ').title()} (Part {part})" if part > 1 else stem.replace("_", " ").title(),
+                authority="Statutory UK Regulatory Document",
+                text=" ".join(buf),
+            )
+        )
+    return docs
+
+
+def load_flexibility_regulatory_corpus(
+    docs_dir: Path | str = DEFAULT_REGULATORY_DOCS_DIR,
+) -> list[RegulatoryDocument]:
+    """Load and parse .pdf (pypdf), .md, and .txt NESO/ENA/Ofgem rules from disk."""
+    target_dir = Path(docs_dir)
+    if not target_dir.exists() or not target_dir.is_dir():
+        return list(UK_FLEXIBILITY_CORPUS)
+
+    loaded: list[RegulatoryDocument] = []
+    seen_ids: set[str] = set()
+
+    for file_path in sorted(target_dir.rglob("*")):
+        if not file_path.is_file():
+            continue
+        suffix = file_path.suffix.lower()
+        chunks: list[RegulatoryDocument] = []
+        if suffix == ".md":
+            content = file_path.read_text(encoding="utf-8", errors="ignore")
+            chunks = _parse_markdown_sections(content, file_path.stem)
+        elif suffix == ".txt":
+            content = file_path.read_text(encoding="utf-8", errors="ignore")
+            chunks = _chunk_plain_text(content, file_path.stem)
+        elif suffix == ".pdf":
+            reader = PdfReader(str(file_path))
+            pdf_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+            chunks = _chunk_plain_text(pdf_text, file_path.stem)
+
+        for doc in chunks:
+            if doc.doc_id not in seen_ids:
+                seen_ids.add(doc.doc_id)
+                loaded.append(doc)
+
+    return loaded if loaded else list(UK_FLEXIBILITY_CORPUS)
+
+
 class HybridRegulatoryRetriever:
     """BM25 + TF-IDF cosine hybrid retriever over NESO, Ofgem, and ENA G98/G99 rules."""
 
-    def __init__(self, corpus: list[RegulatoryDocument] | None = None) -> None:
-        self.corpus = corpus or UK_FLEXIBILITY_CORPUS
+    def __init__(
+        self,
+        corpus: list[RegulatoryDocument] | None = None,
+        docs_dir: Path | str | None = DEFAULT_REGULATORY_DOCS_DIR,
+    ) -> None:
+        if corpus is not None:
+            self.corpus = corpus
+        elif docs_dir is not None:
+            self.corpus = load_flexibility_regulatory_corpus(docs_dir)
+        else:
+            self.corpus = list(UK_FLEXIBILITY_CORPUS)
         self._bm25 = BM25Okapi([_tokenize(f"{d.title} {d.text}") for d in self.corpus])
         self._tfidf = TfidfVectorizer(ngram_range=(1, 2), stop_words="english")
         self._tfidf_matrix = self._tfidf.fit_transform([f"{d.title} {d.text}" for d in self.corpus])
@@ -219,8 +351,12 @@ def verify_citations(
 class FlexibilityCopilot:
     """Guardrailed LangGraph agent for NESO DFS, Ofgem SEG, and ENA G98/G99 compliance."""
 
-    def __init__(self, retriever: HybridRegulatoryRetriever | None = None) -> None:
-        self.retriever = retriever or HybridRegulatoryRetriever()
+    def __init__(
+        self,
+        retriever: HybridRegulatoryRetriever | None = None,
+        docs_dir: Path | str | None = DEFAULT_REGULATORY_DOCS_DIR,
+    ) -> None:
+        self.retriever = retriever or HybridRegulatoryRetriever(docs_dir=docs_dir)
         self.graph = self._build_graph()
 
     def _retrieve_node(self, state: CopilotState) -> CopilotState:

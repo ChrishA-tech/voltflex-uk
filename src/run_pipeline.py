@@ -1,7 +1,8 @@
-"""End-to-end VoltFlex UK pipeline runner with synthetic UK grid/Agile/DNO telemetry + 3% corrupt/stale rows."""
+"""End-to-end VoltFlex UK pipeline runner supporting live NESO/Octopus feeds and offline telemetry."""
 
 from __future__ import annotations
 
+import argparse
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -21,6 +22,7 @@ from src.ingestion.grid_telemetry import (
     UK_DNO_REGIONS,
     ingest_grid_telemetry,
 )
+from src.ingestion.live_grid_connectors import fetch_live_uk_grid_and_agile
 from src.models.forecast_and_dispatch import (
     DispatchConstraints,
     train_and_evaluate_rl_dispatcher,
@@ -124,17 +126,37 @@ def generate_uk_grid_telemetry(
 
 def run_end_to_end(
     days: int = 8,
+    live: bool = True,
     db_path: Path | str = DEFAULT_DB_PATH,
     quarantine_dir: Path | str = DEFAULT_QUARANTINE_DIR,
     report_path: Path | str = Path("docs/ERROR_ANALYSIS_REPORT.md"),
 ) -> dict[str, object]:
     """Execute the complete VoltFlex UK data, ML, RL, evaluation, and copilot pipeline."""
-    raw_df = generate_uk_grid_telemetry(days=days, corrupt_fraction=0.03)
+    if live:
+        live_df = fetch_live_uk_grid_and_agile(quarantine_dir=quarantine_dir)
+        feed_status = (
+            str(live_df["feed_status"].iloc[0])
+            if not live_df.empty and "feed_status" in live_df.columns
+            else "LIVE_GRID_FEED_DEGRADED"
+        )
+        if len(live_df) < 160:
+            # Backfill multi-day history if upstream API returned a short window
+            backfill_df = generate_uk_grid_telemetry(days=4, corrupt_fraction=0.03)
+            backfill_df["feed_status"] = feed_status
+            raw_df = pd.concat([backfill_df, live_df], ignore_index=True)
+        else:
+            raw_df = live_df
+    else:
+        raw_df = generate_uk_grid_telemetry(days=days, corrupt_fraction=0.03)
+        raw_df["feed_status"] = "OFFLINE_SYNTHETIC"
+        feed_status = "OFFLINE_SYNTHETIC"
+
     ingestion = ingest_grid_telemetry(
         raw_df,
         db_path=db_path,
         quarantine_dir=quarantine_dir,
         batch_id="pipeline_run",
+        max_staleness_hours=168.0,
     )
 
     enriched = detect_grid_regimes(ingestion.valid_df)
@@ -170,6 +192,7 @@ def run_end_to_end(
     )
 
     return {
+        "feed_status": feed_status,
         "ingestion": ingestion,
         "curtailment_summary": curtailment_summary,
         "dno_regions_count": len(dno_headroom),
@@ -180,14 +203,34 @@ def run_end_to_end(
     }
 
 
-def main() -> None:
-    results = run_end_to_end()
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse CLI arguments for the VoltFlex UK pipeline runner."""
+    parser = argparse.ArgumentParser(description="VoltFlex UK End-to-End Grid & Flexibility Pipeline")
+    parser.add_argument(
+        "--live",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Fetch live NESO Regional Carbon Intensity and Octopus Agile rates (use --no-live for offline synthetic mode).",
+    )
+    parser.add_argument(
+        "--days",
+        type=int,
+        default=8,
+        help="Number of days of telemetry to generate in --no-live offline mode.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> None:
+    args = parse_args(argv)
+    results = run_end_to_end(days=args.days, live=args.live)
     ing = results["ingestion"]
     curt = results["curtailment_summary"]
     disp = results["dispatch_result"]
     audit = results["audit"]
     cop = results["copilot_probe"]
 
+    print(f"[Feed] live={args.live}, status={results['feed_status']}")
     print(
         f"[Ingestion] total={ing.total_rows}, valid={ing.valid_rows}, "
         f"quarantined={ing.quarantined_rows} ({ing.quarantine_rate:.2%}), "

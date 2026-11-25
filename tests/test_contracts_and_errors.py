@@ -6,11 +6,15 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import duckdb
+import httpx
 import pandas as pd
+import pytest
 from fastapi.testclient import TestClient
 
 from src.agents.flexibility_copilot import (
     FlexibilityCopilot,
+    HybridRegulatoryRetriever,
+    load_flexibility_regulatory_corpus,
     verify_citations,
 )
 from src.analytics.curtailment_detector import (
@@ -24,13 +28,17 @@ from src.ingestion.grid_telemetry import (
     ingest_grid_telemetry,
     pseudonymise_mpan,
 )
+from src.ingestion.live_grid_connectors import (
+    _fetch_json_with_retry,
+    fetch_live_uk_grid_and_agile,
+)
 from src.models.forecast_and_dispatch import (
     DispatchConstraints,
     enforce_thermal_and_soc_limits,
     train_and_evaluate_rl_dispatcher,
     train_conformal_forecasters,
 )
-from src.run_pipeline import generate_uk_grid_telemetry
+from src.run_pipeline import generate_uk_grid_telemetry, run_end_to_end
 
 
 def test_mpan_hmac_pseudonymisation_and_quarantine(tmp_path: Path) -> None:
@@ -285,3 +293,174 @@ def test_fastapi_endpoints_and_degraded_fallback() -> None:
     cop_body = cop_resp.json()
     assert cop_body["citation_verified"] is True
     assert cop_body["interlock_triggered"] is True
+
+
+def _build_minimal_pdf_bytes(text: str) -> bytes:
+    """Construct a minimal valid single-page PDF containing `text` for pypdf parsing tests."""
+    safe_text = text.replace("(", "[").replace(")", "]")
+    stream = f"BT /F1 12 Tf 72 720 Td ({safe_text}) Tj ET".encode("latin-1")
+    objs = [
+        b"1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n",
+        b"2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n",
+        (
+            b"3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
+            b"/Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj\n"
+        ),
+        b"4 0 obj << /Length " + str(len(stream)).encode("ascii") + b" >> stream\n" + stream + b"\nendstream endobj\n",
+        b"5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n",
+    ]
+    header = b"%PDF-1.4\n"
+    offsets: list[int] = []
+    body = bytearray(header)
+    for obj in objs:
+        offsets.append(len(body))
+        body.extend(obj)
+    xref_pos = len(body)
+    body.extend(f"xref\n0 {len(objs) + 1}\n0000000000 65535 f \n".encode("ascii"))
+    for off in offsets:
+        body.extend(f"{off:010d} 00000 n \n".encode("ascii"))
+    body.extend(
+        f"trailer << /Size {len(objs) + 1} /Root 1 0 R >>\nstartxref\n{xref_pos}\n%%EOF\n".encode("ascii")
+    )
+    return bytes(body)
+
+
+def test_live_grid_connectors_and_degraded_fallback(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify mocked NESO Carbon + Octopus Agile live ingestion and LIVE_GRID_FEED_DEGRADED fallback."""
+    monkeypatch.setattr(_fetch_json_with_retry.retry, "wait", lambda *args, **kwargs: 0)
+
+    now = datetime.now(timezone.utc).replace(minute=0, second=0, microsecond=0)
+    carbon_payload = {
+        "data": [
+            {
+                "from": now.isoformat(),
+                "to": (now + timedelta(minutes=30)).isoformat(),
+                "regions": [
+                    {
+                        "regionid": 13,
+                        "shortname": "London",
+                        "intensity": {"forecast": 145, "index": "moderate"},
+                        "generationmix": [{"fuel": "wind", "perc": 38.0}, {"fuel": "solar", "perc": 6.0}],
+                    },
+                    {
+                        "regionid": 1,
+                        "shortname": "North Scotland",
+                        "intensity": {"forecast": 28, "index": "very low"},
+                        "generationmix": [{"fuel": "wind", "perc": 82.0}, {"fuel": "solar", "perc": 1.0}],
+                    },
+                ],
+            }
+        ]
+    }
+    agile_payload = {
+        "results": [
+            {
+                "value_exc_vat": -3.33,
+                "value_inc_vat": -3.50,
+                "valid_from": (now - timedelta(minutes=30)).isoformat(),
+                "valid_to": now.isoformat(),
+            },
+            {
+                "value_exc_vat": 14.0,
+                "value_inc_vat": 14.70,
+                "valid_from": now.isoformat(),
+                "valid_to": (now + timedelta(minutes=30)).isoformat(),
+            },
+        ]
+    }
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if "api.carbonintensity.org.uk" in str(request.url):
+            return httpx.Response(200, json=carbon_payload)
+        if "api.octopus.energy" in str(request.url):
+            return httpx.Response(200, json=agile_payload)
+        return httpx.Response(404)
+
+    transport = httpx.MockTransport(handler)
+    with httpx.Client(transport=transport) as mock_client:
+        live_df = fetch_live_uk_grid_and_agile(
+            dno_region_ids=[12, 17],
+            quarantine_dir=tmp_path / "quarantine",
+            db_path=tmp_path / "live.duckdb",
+            client=mock_client,
+        )
+
+    assert len(live_df) == 4
+    assert set(live_df["dno_region_id"]) == {12, 17}
+    assert (live_df["feed_status"] == "LIVE_NESO_OCTOPUS").all()
+    assert "mpan" not in live_df.columns
+    assert "mpan_hash" in live_df.columns
+    assert (live_df["agile_import_pence"] < 0).any()
+
+    # Now simulate upstream timeout -> must degrade cleanly to LIVE_GRID_FEED_DEGRADED
+    def failing_handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectTimeout("Simulated upstream timeout")
+
+    with httpx.Client(transport=httpx.MockTransport(failing_handler)) as failing_client:
+        degraded_df = fetch_live_uk_grid_and_agile(
+            dno_region_ids=[12, 17],
+            quarantine_dir=tmp_path / "quarantine",
+            client=failing_client,
+        )
+
+    assert not degraded_df.empty
+    assert (degraded_df["feed_status"] == "LIVE_GRID_FEED_DEGRADED").all()
+    assert set(degraded_df["dno_region_id"]) == {12, 17}
+
+
+def test_run_pipeline_live_degraded_fallback(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify run_end_to_end(live=True) recovers cleanly when upstream feeds are degraded."""
+    monkeypatch.setattr(_fetch_json_with_retry.retry, "wait", lambda *args, **kwargs: 0)
+
+    def raise_timeout(*args, **kwargs):
+        raise httpx.ConnectTimeout("Offline test environment")
+
+    monkeypatch.setattr("src.ingestion.live_grid_connectors._fetch_json_with_retry", raise_timeout)
+
+    results = run_end_to_end(
+        days=4,
+        live=True,
+        db_path=tmp_path / "pipeline_live.duckdb",
+        quarantine_dir=tmp_path / "quarantine",
+        report_path=tmp_path / "ERROR_ANALYSIS_REPORT.md",
+    )
+    assert results["feed_status"] == "LIVE_GRID_FEED_DEGRADED"
+    assert results["dno_regions_count"] == 14
+    assert results["dispatch_result"].thermal_violation_rate == 0.0
+    assert (tmp_path / "ERROR_ANALYSIS_REPORT.md").exists()
+
+
+def test_load_flexibility_regulatory_corpus_from_disk(tmp_path: Path) -> None:
+    """Verify load_flexibility_regulatory_corpus parses seeded .md files plus .txt and .pdf files."""
+    seeded_docs = load_flexibility_regulatory_corpus(Path("data/regulatory_docs"))
+    seeded_ids = {d.doc_id for d in seeded_docs}
+    assert {"ENA-G98-01", "ENA-G99-01", "NESO-DFS-01", "OFGEM-SEG-01"} <= seeded_ids
+
+    (tmp_path / "extra_rules.md").write_text(
+        "## [DNO-G100-01] ENA G100 Export Limitation\nAuthority: ENA\n\nG100 active export limiting prevents feeder thermal overload.",
+        encoding="utf-8",
+    )
+    (tmp_path / "notes.txt").write_text(
+        "NESO Winter Demand Flexibility Service baseline verification uses smart meter half-hourly intervals.",
+        encoding="utf-8",
+    )
+    (tmp_path / "statutory_summary.pdf").write_bytes(
+        _build_minimal_pdf_bytes("Ofgem Smart Export Guarantee requires a registered export MPAN and 3.68 kW G98 threshold.")
+    )
+
+    custom_docs = load_flexibility_regulatory_corpus(tmp_path)
+    custom_ids = {d.doc_id for d in custom_docs}
+    assert "DNO-G100-01" in custom_ids
+    assert any(cid.startswith("NOTES-") for cid in custom_ids)
+    assert any(cid.startswith("STATUTORY") for cid in custom_ids)
+
+    retriever = HybridRegulatoryRetriever(corpus=custom_docs)
+    hits = retriever.retrieve("G100 feeder thermal overload", top_k=2)
+    assert hits[0][0].doc_id == "DNO-G100-01"
+

@@ -1,0 +1,611 @@
+{
+  "config": {
+    "slug": "voltflex-uk",
+    "name": "VoltFlex UK",
+    "domain": "Energy flexibility",
+    "subtitle": "Compare charging policies on 28 days of archived Octopus tariffs.",
+    "units": "£ per replay",
+    "baseline": "Earliest charge",
+    "candidate": "Rolling optimiser",
+    "stress": "Negative prices",
+    "groups": [
+      "North West",
+      "London",
+      "Scotland"
+    ],
+    "note": "The first eight hours of each UTC day use published half-hour prices. EV sessions and the 6 kWh charge target are simulated. This replay assumes the full day-ahead tariff is available at midnight."
+  },
+  "provenance": "Observed Octopus Agile prices, 6 October–2 November 2025; simulated EV sessions",
+  "cases": [
+    {
+      "period": 1,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 0.43193,
+      "candidate": 0.3928
+    },
+    {
+      "period": 1,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 0.42119,
+      "candidate": 0.38397
+    },
+    {
+      "period": 1,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 0.43193,
+      "candidate": 0.3928
+    },
+    {
+      "period": 2,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.28768,
+      "candidate": 1.19628
+    },
+    {
+      "period": 2,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.23638,
+      "candidate": 1.14927
+    },
+    {
+      "period": 2,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.28768,
+      "candidate": 1.19628
+    },
+    {
+      "period": 3,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.42991,
+      "candidate": 1.323
+    },
+    {
+      "period": 3,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.37192,
+      "candidate": 1.27002
+    },
+    {
+      "period": 3,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.42991,
+      "candidate": 1.323
+    },
+    {
+      "period": 4,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.35665,
+      "candidate": 1.34233
+    },
+    {
+      "period": 4,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.302,
+      "candidate": 1.2884
+    },
+    {
+      "period": 4,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.35665,
+      "candidate": 1.34233
+    },
+    {
+      "period": 5,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.29723,
+      "candidate": 1.28005
+    },
+    {
+      "period": 5,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.24568,
+      "candidate": 1.22922
+    },
+    {
+      "period": 5,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.29723,
+      "candidate": 1.28005
+    },
+    {
+      "period": 6,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.36882,
+      "candidate": 1.35044
+    },
+    {
+      "period": 6,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.31369,
+      "candidate": 1.29627
+    },
+    {
+      "period": 6,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.36882,
+      "candidate": 1.35044
+    },
+    {
+      "period": 7,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.46523,
+      "candidate": 1.33374
+    },
+    {
+      "period": 7,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.40557,
+      "candidate": 1.28005
+    },
+    {
+      "period": 7,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.46523,
+      "candidate": 1.33374
+    },
+    {
+      "period": 8,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.32252,
+      "candidate": 1.30367
+    },
+    {
+      "period": 8,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.26955,
+      "candidate": 1.25141
+    },
+    {
+      "period": 8,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.32252,
+      "candidate": 1.30367
+    },
+    {
+      "period": 9,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.33064,
+      "candidate": 1.31107
+    },
+    {
+      "period": 9,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.27742,
+      "candidate": 1.25881
+    },
+    {
+      "period": 9,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.33064,
+      "candidate": 1.31107
+    },
+    {
+      "period": 10,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.36047,
+      "candidate": 1.32276
+    },
+    {
+      "period": 10,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.30558,
+      "candidate": 1.26978
+    },
+    {
+      "period": 10,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.36047,
+      "candidate": 1.32276
+    },
+    {
+      "period": 11,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.32228,
+      "candidate": 1.30295
+    },
+    {
+      "period": 11,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.26931,
+      "candidate": 1.25093
+    },
+    {
+      "period": 11,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.32228,
+      "candidate": 1.30295
+    },
+    {
+      "period": 12,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.3514,
+      "candidate": 1.32061
+    },
+    {
+      "period": 12,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.29723,
+      "candidate": 1.26788
+    },
+    {
+      "period": 12,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.3514,
+      "candidate": 1.32061
+    },
+    {
+      "period": 13,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.41726,
+      "candidate": 1.36357
+    },
+    {
+      "period": 13,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.35975,
+      "candidate": 1.30868
+    },
+    {
+      "period": 13,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.41726,
+      "candidate": 1.36357
+    },
+    {
+      "period": 14,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.17218,
+      "candidate": 0.83069
+    },
+    {
+      "period": 14,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.12636,
+      "candidate": 0.8011
+    },
+    {
+      "period": 14,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.17218,
+      "candidate": 0.83069
+    },
+    {
+      "period": 15,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 0.96863,
+      "candidate": 0.95073
+    },
+    {
+      "period": 15,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 0.93259,
+      "candidate": 0.91541
+    },
+    {
+      "period": 15,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 0.96863,
+      "candidate": 0.95073
+    },
+    {
+      "period": 16,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.38266,
+      "candidate": 1.18578
+    },
+    {
+      "period": 16,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.32682,
+      "candidate": 1.13949
+    },
+    {
+      "period": 16,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.38266,
+      "candidate": 1.18578
+    },
+    {
+      "period": 17,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.13877,
+      "candidate": 1.07506
+    },
+    {
+      "period": 17,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.09462,
+      "candidate": 1.03377
+    },
+    {
+      "period": 17,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.13877,
+      "candidate": 1.07506
+    },
+    {
+      "period": 18,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.50245,
+      "candidate": 1.07028
+    },
+    {
+      "period": 18,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.44089,
+      "candidate": 1.02948
+    },
+    {
+      "period": 18,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.50245,
+      "candidate": 1.07028
+    },
+    {
+      "period": 19,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 0.3224,
+      "candidate": 0.28064
+    },
+    {
+      "period": 19,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 0.31715,
+      "candidate": 0.2773
+    },
+    {
+      "period": 19,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 0.3224,
+      "candidate": 0.28064
+    },
+    {
+      "period": 20,
+      "group": "Eastern",
+      "scenario": "Negative prices",
+      "baseline": 0.21453,
+      "candidate": 0.18566
+    },
+    {
+      "period": 20,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 0.2143,
+      "candidate": 0.18685
+    },
+    {
+      "period": 20,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 0.21453,
+      "candidate": 0.18566
+    },
+    {
+      "period": 21,
+      "group": "Eastern",
+      "scenario": "Negative prices",
+      "baseline": 0.27061,
+      "candidate": 0.0797
+    },
+    {
+      "period": 21,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 0.26775,
+      "candidate": 0.08591
+    },
+    {
+      "period": 21,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 0.27061,
+      "candidate": 0.0797
+    },
+    {
+      "period": 22,
+      "group": "Eastern",
+      "scenario": "Negative prices",
+      "baseline": 0.21453,
+      "candidate": 0.20547
+    },
+    {
+      "period": 22,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 0.2143,
+      "candidate": 0.2057
+    },
+    {
+      "period": 22,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 0.21453,
+      "candidate": 0.20547
+    },
+    {
+      "period": 23,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 0.58705,
+      "candidate": 0.44339
+    },
+    {
+      "period": 23,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 0.56915,
+      "candidate": 0.43217
+    },
+    {
+      "period": 23,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 0.58705,
+      "candidate": 0.44339
+    },
+    {
+      "period": 24,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.02972,
+      "candidate": 0.95598
+    },
+    {
+      "period": 24,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 0.99058,
+      "candidate": 0.92042
+    },
+    {
+      "period": 24,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.02972,
+      "candidate": 0.95598
+    },
+    {
+      "period": 25,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.19223,
+      "candidate": 1.12589
+    },
+    {
+      "period": 25,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.14545,
+      "candidate": 1.08222
+    },
+    {
+      "period": 25,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.19223,
+      "candidate": 1.12589
+    },
+    {
+      "period": 26,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 0.3854,
+      "candidate": 0.33003
+    },
+    {
+      "period": 26,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 0.37705,
+      "candidate": 0.32431
+    },
+    {
+      "period": 26,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 0.3854,
+      "candidate": 0.33003
+    },
+    {
+      "period": 27,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 0.8567,
+      "candidate": 0.36201
+    },
+    {
+      "period": 27,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 0.82616,
+      "candidate": 0.35461
+    },
+    {
+      "period": 27,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 0.8567,
+      "candidate": 0.36201
+    },
+    {
+      "period": 28,
+      "group": "Eastern",
+      "scenario": "Non-negative prices",
+      "baseline": 1.06169,
+      "candidate": 0.94405
+    },
+    {
+      "period": 28,
+      "group": "London",
+      "scenario": "Non-negative prices",
+      "baseline": 1.02113,
+      "candidate": 0.9092
+    },
+    {
+      "period": 28,
+      "group": "North West",
+      "scenario": "Non-negative prices",
+      "baseline": 1.06169,
+      "candidate": 0.94405
+    }
+  ],
+  "baseline_mean": 1.024079880952381,
+  "candidate_mean": 0.9230939285714286
+}

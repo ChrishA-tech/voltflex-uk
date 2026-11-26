@@ -51,3 +51,20 @@ cmp replay/observed-tariff.json /tmp/observed-tariff.json
 ```
 
 Add `--refresh` to fetch the fixed window from the [Octopus Energy API](https://developer.octopus.energy/rest/guides/endpoints) again.
+
+## Tariff availability benchmark
+
+The [42-session holdout](price-information-results.json) compares immediate charging, rolling optimisation with a forecast built from the preceding 14 days, and optimisation with the full published tariff. All policies use observed Octopus prices, the same 6 kWh target and the same charging constraints. The historical-price rule sees the current slot price during replay; the published-tariff rule knows the schedule for the full session.
+
+| Policy | Mean simulated cost |
+| --- | ---: |
+| Immediate charging | £0.786 |
+| Rolling optimisation, trailing 14-day price forecast | £0.730 |
+| Optimisation, published tariff | £0.650 |
+
+The historical-price forecast beat immediate charging on 12 sessions and lost on six. Its largest cost disadvantage was about £0.104. Sessions are simulated and the replay does not test the actor–critic policy.
+
+```sh
+python replay/price_information_backtest.py --output /tmp/price-information-results.json
+diff -u replay/price-information-results.json /tmp/price-information-results.json
+```

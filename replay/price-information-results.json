@@ -1,0 +1,21 @@
+{
+  "source": "Octopus Agile historical tariffs, simulated 6 kWh EV sessions",
+  "metric": "GBP cost per session; lower is better",
+  "holdout": [
+    "2025-10-20",
+    "2025-11-02"
+  ],
+  "cases": 42,
+  "mean_cost_gbp": {
+    "earliest": 0.78554,
+    "historical": 0.730097,
+    "published": 0.64967
+  },
+  "historical_forecast_wins": 12,
+  "historical_forecast_losses": 6,
+  "largest_historical_forecast_disadvantage": {
+    "date": "2025-10-29",
+    "region": "Eastern",
+    "extra_cost_gbp": 0.104284
+  }
+}

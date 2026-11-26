@@ -1,0 +1,14 @@
+name: Decision replay
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s replay -v
+      - run: python replay/replay.py --output /tmp/replay.json && diff -u replay/example.json /tmp/replay.json

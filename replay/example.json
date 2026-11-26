@@ -1,0 +1,611 @@
+{
+  "config": {
+    "slug": "voltflex-uk",
+    "name": "VoltFlex UK",
+    "domain": "Energy flexibility",
+    "subtitle": "Compare charging policies across tariff and forecast scenarios.",
+    "units": "\u00a3 per replay",
+    "baseline": "Earliest charge",
+    "candidate": "Rolling optimiser",
+    "stress": "Negative prices",
+    "groups": [
+      "North West",
+      "London",
+      "Scotland"
+    ],
+    "note": "This charging replay compares two policies with the same departure target and import cap. It includes conversion losses and a wear charge. Prices and forecast errors are simulated. The actor\u2013critic and savings from the source project are outside this benchmark."
+  },
+  "provenance": "Deterministic synthetic scenarios",
+  "cases": [
+    {
+      "period": 1,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 1.35385,
+      "candidate": 0.88403
+    },
+    {
+      "period": 2,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 1.59646,
+      "candidate": 1.10107
+    },
+    {
+      "period": 3,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 2.28819,
+      "candidate": 1.23817
+    },
+    {
+      "period": 4,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 2.33226,
+      "candidate": 0.42367
+    },
+    {
+      "period": 5,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 2.59267,
+      "candidate": 0.89257
+    },
+    {
+      "period": 6,
+      "group": "Scotland",
+      "scenario": "Negative prices",
+      "baseline": 1.23303,
+      "candidate": 0.32728
+    },
+    {
+      "period": 7,
+      "group": "North West",
+      "scenario": "Feed degraded",
+      "baseline": 2.32448,
+      "candidate": 1.29064
+    },
+    {
+      "period": 8,
+      "group": "London",
+      "scenario": "Feed degraded",
+      "baseline": 1.44681,
+      "candidate": 0.85437
+    },
+    {
+      "period": 9,
+      "group": "Scotland",
+      "scenario": "Feed degraded",
+      "baseline": 1.64026,
+      "candidate": 1.41216
+    },
+    {
+      "period": 10,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 2.26551,
+      "candidate": 1.22162
+    },
+    {
+      "period": 11,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 1.46624,
+      "candidate": 0.91443
+    },
+    {
+      "period": 12,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 2.78684,
+      "candidate": 1.42599
+    },
+    {
+      "period": 13,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 1.62024,
+      "candidate": 0.57246
+    },
+    {
+      "period": 14,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 1.93972,
+      "candidate": 0.81555
+    },
+    {
+      "period": 15,
+      "group": "Scotland",
+      "scenario": "Negative prices",
+      "baseline": 1.19468,
+      "candidate": 0.57033
+    },
+    {
+      "period": 16,
+      "group": "North West",
+      "scenario": "Feed degraded",
+      "baseline": 1.797,
+      "candidate": 1.08805
+    },
+    {
+      "period": 17,
+      "group": "London",
+      "scenario": "Feed degraded",
+      "baseline": 1.60591,
+      "candidate": 1.17817
+    },
+    {
+      "period": 18,
+      "group": "Scotland",
+      "scenario": "Feed degraded",
+      "baseline": 1.79925,
+      "candidate": 1.08344
+    },
+    {
+      "period": 19,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 1.54931,
+      "candidate": 0.72141
+    },
+    {
+      "period": 20,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 1.97683,
+      "candidate": 1.43567
+    },
+    {
+      "period": 21,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 1.30969,
+      "candidate": 1.13949
+    },
+    {
+      "period": 22,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 1.26565,
+      "candidate": 0.45306
+    },
+    {
+      "period": 23,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 1.40723,
+      "candidate": 0.70449
+    },
+    {
+      "period": 24,
+      "group": "Scotland",
+      "scenario": "Negative prices",
+      "baseline": 0.90996,
+      "candidate": 0.36537
+    },
+    {
+      "period": 25,
+      "group": "North West",
+      "scenario": "Feed degraded",
+      "baseline": 2.68383,
+      "candidate": 0.84378
+    },
+    {
+      "period": 26,
+      "group": "London",
+      "scenario": "Feed degraded",
+      "baseline": 2.38057,
+      "candidate": 1.41314
+    },
+    {
+      "period": 27,
+      "group": "Scotland",
+      "scenario": "Feed degraded",
+      "baseline": 2.39726,
+      "candidate": 0.87063
+    },
+    {
+      "period": 28,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 1.46342,
+      "candidate": 0.94896
+    },
+    {
+      "period": 29,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 2.24799,
+      "candidate": 1.06464
+    },
+    {
+      "period": 30,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 1.329,
+      "candidate": 0.80458
+    },
+    {
+      "period": 31,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 1.73028,
+      "candidate": 0.53618
+    },
+    {
+      "period": 32,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 1.9031,
+      "candidate": 0.6304
+    },
+    {
+      "period": 33,
+      "group": "Scotland",
+      "scenario": "Negative prices",
+      "baseline": 2.21549,
+      "candidate": 0.91131
+    },
+    {
+      "period": 34,
+      "group": "North West",
+      "scenario": "Feed degraded",
+      "baseline": 1.62806,
+      "candidate": 0.83607
+    },
+    {
+      "period": 35,
+      "group": "London",
+      "scenario": "Feed degraded",
+      "baseline": 1.10527,
+      "candidate": 0.79562
+    },
+    {
+      "period": 36,
+      "group": "Scotland",
+      "scenario": "Feed degraded",
+      "baseline": 1.18874,
+      "candidate": 0.81124
+    },
+    {
+      "period": 37,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 1.52384,
+      "candidate": 0.99263
+    },
+    {
+      "period": 38,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 2.32517,
+      "candidate": 1.22394
+    },
+    {
+      "period": 39,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 1.62506,
+      "candidate": 1.36044
+    },
+    {
+      "period": 40,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 1.38054,
+      "candidate": 0.58649
+    },
+    {
+      "period": 41,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 1.57007,
+      "candidate": 0.28679
+    },
+    {
+      "period": 42,
+      "group": "Scotland",
+      "scenario": "Negative prices",
+      "baseline": 2.55565,
+      "candidate": 0.89301
+    },
+    {
+      "period": 43,
+      "group": "North West",
+      "scenario": "Feed degraded",
+      "baseline": 1.91158,
+      "candidate": 0.98641
+    },
+    {
+      "period": 44,
+      "group": "London",
+      "scenario": "Feed degraded",
+      "baseline": 1.90454,
+      "candidate": 0.87876
+    },
+    {
+      "period": 45,
+      "group": "Scotland",
+      "scenario": "Feed degraded",
+      "baseline": 2.86666,
+      "candidate": 0.95456
+    },
+    {
+      "period": 46,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 2.10745,
+      "candidate": 1.12011
+    },
+    {
+      "period": 47,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 1.41489,
+      "candidate": 1.00186
+    },
+    {
+      "period": 48,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 1.31907,
+      "candidate": 0.70073
+    },
+    {
+      "period": 49,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 1.29408,
+      "candidate": 0.56143
+    },
+    {
+      "period": 50,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 1.91447,
+      "candidate": 0.9152
+    },
+    {
+      "period": 51,
+      "group": "Scotland",
+      "scenario": "Negative prices",
+      "baseline": 2.01978,
+      "candidate": 0.47095
+    },
+    {
+      "period": 52,
+      "group": "North West",
+      "scenario": "Feed degraded",
+      "baseline": 1.21775,
+      "candidate": 1.00929
+    },
+    {
+      "period": 53,
+      "group": "London",
+      "scenario": "Feed degraded",
+      "baseline": 1.18586,
+      "candidate": 1.18586
+    },
+    {
+      "period": 54,
+      "group": "Scotland",
+      "scenario": "Feed degraded",
+      "baseline": 1.64879,
+      "candidate": 0.74565
+    },
+    {
+      "period": 55,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 2.06841,
+      "candidate": 1.00772
+    },
+    {
+      "period": 56,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 1.05233,
+      "candidate": 0.69742
+    },
+    {
+      "period": 57,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 1.67615,
+      "candidate": 1.19993
+    },
+    {
+      "period": 58,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 1.95923,
+      "candidate": 0.65372
+    },
+    {
+      "period": 59,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 1.55308,
+      "candidate": 0.54533
+    },
+    {
+      "period": 60,
+      "group": "Scotland",
+      "scenario": "Negative prices",
+      "baseline": 2.0888,
+      "candidate": 0.97867
+    },
+    {
+      "period": 61,
+      "group": "North West",
+      "scenario": "Feed degraded",
+      "baseline": 1.79392,
+      "candidate": 1.041
+    },
+    {
+      "period": 62,
+      "group": "London",
+      "scenario": "Feed degraded",
+      "baseline": 1.73159,
+      "candidate": 0.71952
+    },
+    {
+      "period": 63,
+      "group": "Scotland",
+      "scenario": "Feed degraded",
+      "baseline": 1.76777,
+      "candidate": 0.94051
+    },
+    {
+      "period": 64,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 1.49384,
+      "candidate": 0.82507
+    },
+    {
+      "period": 65,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 1.59706,
+      "candidate": 0.89424
+    },
+    {
+      "period": 66,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 1.0728,
+      "candidate": 0.73585
+    },
+    {
+      "period": 67,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 1.25723,
+      "candidate": 0.56068
+    },
+    {
+      "period": 68,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 1.73471,
+      "candidate": 0.39591
+    },
+    {
+      "period": 69,
+      "group": "Scotland",
+      "scenario": "Negative prices",
+      "baseline": 1.64873,
+      "candidate": 0.41879
+    },
+    {
+      "period": 70,
+      "group": "North West",
+      "scenario": "Feed degraded",
+      "baseline": 2.21677,
+      "candidate": 1.47921
+    },
+    {
+      "period": 71,
+      "group": "London",
+      "scenario": "Feed degraded",
+      "baseline": 1.32175,
+      "candidate": 1.32175
+    },
+    {
+      "period": 72,
+      "group": "Scotland",
+      "scenario": "Feed degraded",
+      "baseline": 1.84472,
+      "candidate": 1.40821
+    },
+    {
+      "period": 73,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 1.32891,
+      "candidate": 1.11521
+    },
+    {
+      "period": 74,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 1.52679,
+      "candidate": 0.89024
+    },
+    {
+      "period": 75,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 1.7394,
+      "candidate": 1.09635
+    },
+    {
+      "period": 76,
+      "group": "North West",
+      "scenario": "Negative prices",
+      "baseline": 1.74333,
+      "candidate": 0.64667
+    },
+    {
+      "period": 77,
+      "group": "London",
+      "scenario": "Negative prices",
+      "baseline": 0.90358,
+      "candidate": 0.5793
+    },
+    {
+      "period": 78,
+      "group": "Scotland",
+      "scenario": "Negative prices",
+      "baseline": 1.83512,
+      "candidate": 0.68251
+    },
+    {
+      "period": 79,
+      "group": "North West",
+      "scenario": "Feed degraded",
+      "baseline": 1.29725,
+      "candidate": 1.24455
+    },
+    {
+      "period": 80,
+      "group": "London",
+      "scenario": "Feed degraded",
+      "baseline": 2.33644,
+      "candidate": 2.39605
+    },
+    {
+      "period": 81,
+      "group": "Scotland",
+      "scenario": "Feed degraded",
+      "baseline": 1.91499,
+      "candidate": 1.21149
+    },
+    {
+      "period": 82,
+      "group": "North West",
+      "scenario": "Typical",
+      "baseline": 1.10287,
+      "candidate": 1.10287
+    },
+    {
+      "period": 83,
+      "group": "London",
+      "scenario": "Typical",
+      "baseline": 1.70788,
+      "candidate": 1.41597
+    },
+    {
+      "period": 84,
+      "group": "Scotland",
+      "scenario": "Typical",
+      "baseline": 1.80175,
+      "candidate": 1.12134
+    }
+  ],
+  "baseline_mean": 1.7247325,
+  "candidate_mean": 0.9259551190476191
+}

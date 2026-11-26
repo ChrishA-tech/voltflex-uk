@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UK Decision Replay | Chrish Pep Felix A</title>
+<style>
+:root{color-scheme:light dark;font:16px/1.5 system-ui,sans-serif;--surface:#fff;--ink:#142239;--sub:#4f5f74;--bg:#eef3fa;--line:#d8e2ef;--blue:#075ec9;--candidate:#0669cc;--base:#77879c}
+@media(prefers-color-scheme:dark){:root{--surface:#152134;--ink:#f2f6ff;--sub:#b1c1d6;--bg:#0d1524;--line:#344761;--blue:#9bc7ff;--candidate:#69b4ff;--base:#a3b0c0}}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--bg)}main,nav{max-width:1152px;margin:auto;padding:0 26px}nav{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-block:22px}a{color:var(--blue);text-underline-offset:4px}h1,h2,p{margin:0}h1{font-size:clamp(3.1rem,8vw,6.7rem);line-height:1;letter-spacing:-.075em;margin:.2em 0}h2{font-size:1.32rem;letter-spacing:-.02em}.lead{font-size:1.2rem;max-width:38rem;color:var(--sub)}.hero{padding:48px 0 35px;border-top:1px solid var(--line)}.domain{color:var(--blue);font-weight:700}.panel{padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 30px #182a4510}.filters,.scores{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:16px}.scores strong{display:block;font-size:2.1rem;letter-spacing:-.04em}.muted,.panel p{color:var(--sub)}.panel p{margin-top:6px}label{display:grid;gap:5px;font-weight:650}select,button{width:100%;font:inherit;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:10px 12px}button{width:auto;cursor:pointer}button:disabled{opacity:.5;cursor:default}button:hover:not(:disabled){border-color:var(--blue)}.chart{padding-bottom:14px}.chart canvas{width:100%;height:255px;display:block;margin-top:12px}.legend{display:flex;gap:18px;font-weight:650;flex-wrap:wrap}.legend span::before{content:'';display:inline-block;width:.8rem;height:.5rem;border-radius:4px;background:var(--base);margin-right:7px}.legend span+span::before{background:var(--candidate)}.details{margin:16px 0 44px}.details table{width:100%;border-collapse:collapse;text-align:left;margin-top:12px}td,th{padding:9px;border-bottom:1px solid var(--line)}.scroll{overflow:auto}.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.scope{border-left:3px solid var(--blue);padding-left:12px;margin:14px 0}.state{margin-top:12px}.hidden{display:none}@media(max-width:670px){main,nav{padding-inline:16px}.filters{grid-template-columns:1fr}.scores{gap:6px}.scores .panel{padding:10px}.scores strong{font-size:1.5rem}.hero{padding-block:32px}.chart canvas{height:210px}}
+</style>
+</head>
+<body>
+<nav><a href="https://chrisha-tech.github.io/">Chrish Pep Felix A</a><a id="repo" href="https://github.com/ChrishA-tech">GitHub repository</a></nav>
+<main>
+<header class="hero"><p class="domain" id="domain">Interactive portfolio</p><h1 id="title">UK Decision Replay</h1><p id="subtitle" class="lead"></p></header>
+<p id="failure" role="alert" class="panel hidden"></p>
+<div id="interactive" class="hidden">
+<div class="filters panel">
+<label>Project<select id="project"></select></label>
+<label>Region or group<select id="group"></select></label>
+<label>Scenario<select id="scenario"></select></label>
+</div>
+<p id="scope" class="scope"></p>
+<section class="scores" aria-label="Results" aria-live="polite">
+<div class="panel"><span id="base-label"></span><strong id="baseline"></strong><span class="muted" id="units"></span></div>
+<div class="panel"><span id="candidate-label"></span><strong id="candidate"></strong><span class="muted">Lower is better</span></div>
+<div class="panel"><span>Candidate wins</span><strong id="wins"></strong><span class="muted" id="count"></span></div>
+</section>
+<section class="panel chart">
+<div class="row"><h2>Replay by case</h2><button id="download" type="button">Export visible cases</button></div>
+<canvas id="chart" role="img" aria-label="Baseline and candidate scores by replay case. Values are available in the table."></canvas>
+<div class="legend"><span id="base-legend"></span><span id="candidate-legend"></span></div>
+<p class="state" id="status" aria-live="polite"></p>
+</section>
+<section class="panel details">
+<h2>Where the candidate struggled</h2>
+<p id="analysis"></p>
+<div class="scroll"><table><thead><tr><th scope="col">Case</th><th scope="col">Group</th><th scope="col">Scenario</th><th scope="col">Baseline</th><th scope="col">Candidate</th></tr></thead><tbody id="cases"></tbody></table></div>
+</section>
+</div>
+<noscript><p class="panel">Enable JavaScript to explore the replay. The source and benchmark documentation are available on GitHub.</p></noscript>
+</main>
+<script id="data" type="application/json">[{"config": {"slug": "voltflex-uk", "name": "VoltFlex UK", "domain": "Energy flexibility", "subtitle": "Compare charging policies across tariff and forecast scenarios.", "units": "£ per replay", "baseline": "Earliest charge", "candidate": "Rolling optimiser", "stress": "Negative prices", "groups": ["North West", "London", "Scotland"], "note": "This charging replay compares two policies with the same departure target and import cap. It includes conversion losses and a wear charge. Prices and forecast errors are simulated. The actor–critic and savings from the source project are outside this benchmark."}, "provenance": "Deterministic synthetic scenarios", "cases": [{"period": 1, "group": "North West", "scenario": "Typical", "baseline": 1.35385, "candidate": 0.88403}, {"period": 2, "group": "London", "scenario": "Typical", "baseline": 1.59646, "candidate": 1.10107}, {"period": 3, "group": "Scotland", "scenario": "Typical", "baseline": 2.28819, "candidate": 1.23817}, {"period": 4, "group": "North West", "scenario": "Negative prices", "baseline": 2.33226, "candidate": 0.42367}, {"period": 5, "group": "London", "scenario": "Negative prices", "baseline": 2.59267, "candidate": 0.89257}, {"period": 6, "group": "Scotland", "scenario": "Negative prices", "baseline": 1.23303, "candidate": 0.32728}, {"period": 7, "group": "North West", "scenario": "Feed degraded", "baseline": 2.32448, "candidate": 1.29064}, {"period": 8, "group": "London", "scenario": "Feed degraded", "baseline": 1.44681, "candidate": 0.85437}, {"period": 9, "group": "Scotland", "scenario": "Feed degraded", "baseline": 1.64026, "candidate": 1.41216}, {"period": 10, "group": "North West", "scenario": "Typical", "baseline": 2.26551, "candidate": 1.22162}, {"period": 11, "group": "London", "scenario": "Typical", "baseline": 1.46624, "candidate": 0.91443}, {"period": 12, "group": "Scotland", "scenario": "Typical", "baseline": 2.78684, "candidate": 1.42599}, {"period": 13, "group": "North West", "scenario": "Negative prices", "baseline": 1.62024, "candidate": 0.57246}, {"period": 14, "group": "London", "scenario": "Negative prices", "baseline": 1.93972, "candidate": 0.81555}, {"period": 15, "group": "Scotland", "scenario": "Negative prices", "baseline": 1.19468, "candidate": 0.57033}, {"period": 16, "group": "North West", "scenario": "Feed degraded", "baseline": 1.797, "candidate": 1.08805}, {"period": 17, "group": "London", "scenario": "Feed degraded", "baseline": 1.60591, "candidate": 1.17817}, {"period": 18, "group": "Scotland", "scenario": "Feed degraded", "baseline": 1.79925, "candidate": 1.08344}, {"period": 19, "group": "North West", "scenario": "Typical", "baseline": 1.54931, "candidate": 0.72141}, {"period": 20, "group": "London", "scenario": "Typical", "baseline": 1.97683, "candidate": 1.43567}, {"period": 21, "group": "Scotland", "scenario": "Typical", "baseline": 1.30969, "candidate": 1.13949}, {"period": 22, "group": "North West", "scenario": "Negative prices", "baseline": 1.26565, "candidate": 0.45306}, {"period": 23, "group": "London", "scenario": "Negative prices", "baseline": 1.40723, "candidate": 0.70449}, {"period": 24, "group": "Scotland", "scenario": "Negative prices", "baseline": 0.90996, "candidate": 0.36537}, {"period": 25, "group": "North West", "scenario": "Feed degraded", "baseline": 2.68383, "candidate": 0.84378}, {"period": 26, "group": "London", "scenario": "Feed degraded", "baseline": 2.38057, "candidate": 1.41314}, {"period": 27, "group": "Scotland", "scenario": "Feed degraded", "baseline": 2.39726, "candidate": 0.87063}, {"period": 28, "group": "North West", "scenario": "Typical", "baseline": 1.46342, "candidate": 0.94896}, {"period": 29, "group": "London", "scenario": "Typical", "baseline": 2.24799, "candidate": 1.06464}, {"period": 30, "group": "Scotland", "scenario": "Typical", "baseline": 1.329, "candidate": 0.80458}, {"period": 31, "group": "North West", "scenario": "Negative prices", "baseline": 1.73028, "candidate": 0.53618}, {"period": 32, "group": "London", "scenario": "Negative prices", "baseline": 1.9031, "candidate": 0.6304}, {"period": 33, "group": "Scotland", "scenario": "Negative prices", "baseline": 2.21549, "candidate": 0.91131}, {"period": 34, "group": "North West", "scenario": "Feed degraded", "baseline": 1.62806, "candidate": 0.83607}, {"period": 35, "group": "London", "scenario": "Feed degraded", "baseline": 1.10527, "candidate": 0.79562}, {"period": 36, "group": "Scotland", "scenario": "Feed degraded", "baseline": 1.18874, "candidate": 0.81124}, {"period": 37, "group": "North West", "scenario": "Typical", "baseline": 1.52384, "candidate": 0.99263}, {"period": 38, "group": "London", "scenario": "Typical", "baseline": 2.32517, "candidate": 1.22394}, {"period": 39, "group": "Scotland", "scenario": "Typical", "baseline": 1.62506, "candidate": 1.36044}, {"period": 40, "group": "North West", "scenario": "Negative prices", "baseline": 1.38054, "candidate": 0.58649}, {"period": 41, "group": "London", "scenario": "Negative prices", "baseline": 1.57007, "candidate": 0.28679}, {"period": 42, "group": "Scotland", "scenario": "Negative prices", "baseline": 2.55565, "candidate": 0.89301}, {"period": 43, "group": "North West", "scenario": "Feed degraded", "baseline": 1.91158, "candidate": 0.98641}, {"period": 44, "group": "London", "scenario": "Feed degraded", "baseline": 1.90454, "candidate": 0.87876}, {"period": 45, "group": "Scotland", "scenario": "Feed degraded", "baseline": 2.86666, "candidate": 0.95456}, {"period": 46, "group": "North West", "scenario": "Typical", "baseline": 2.10745, "candidate": 1.12011}, {"period": 47, "group": "London", "scenario": "Typical", "baseline": 1.41489, "candidate": 1.00186}, {"period": 48, "group": "Scotland", "scenario": "Typical", "baseline": 1.31907, "candidate": 0.70073}, {"period": 49, "group": "North West", "scenario": "Negative prices", "baseline": 1.29408, "candidate": 0.56143}, {"period": 50, "group": "London", "scenario": "Negative prices", "baseline": 1.91447, "candidate": 0.9152}, {"period": 51, "group": "Scotland", "scenario": "Negative prices", "baseline": 2.01978, "candidate": 0.47095}, {"period": 52, "group": "North West", "scenario": "Feed degraded", "baseline": 1.21775, "candidate": 1.00929}, {"period": 53, "group": "London", "scenario": "Feed degraded", "baseline": 1.18586, "candidate": 1.18586}, {"period": 54, "group": "Scotland", "scenario": "Feed degraded", "baseline": 1.64879, "candidate": 0.74565}, {"period": 55, "group": "North West", "scenario": "Typical", "baseline": 2.06841, "candidate": 1.00772}, {"period": 56, "group": "London", "scenario": "Typical", "baseline": 1.05233, "candidate": 0.69742}, {"period": 57, "group": "Scotland", "scenario": "Typical", "baseline": 1.67615, "candidate": 1.19993}, {"period": 58, "group": "North West", "scenario": "Negative prices", "baseline": 1.95923, "candidate": 0.65372}, {"period": 59, "group": "London", "scenario": "Negative prices", "baseline": 1.55308, "candidate": 0.54533}, {"period": 60, "group": "Scotland", "scenario": "Negative prices", "baseline": 2.0888, "candidate": 0.97867}, {"period": 61, "group": "North West", "scenario": "Feed degraded", "baseline": 1.79392, "candidate": 1.041}, {"period": 62, "group": "London", "scenario": "Feed degraded", "baseline": 1.73159, "candidate": 0.71952}, {"period": 63, "group": "Scotland", "scenario": "Feed degraded", "baseline": 1.76777, "candidate": 0.94051}, {"period": 64, "group": "North West", "scenario": "Typical", "baseline": 1.49384, "candidate": 0.82507}, {"period": 65, "group": "London", "scenario": "Typical", "baseline": 1.59706, "candidate": 0.89424}, {"period": 66, "group": "Scotland", "scenario": "Typical", "baseline": 1.0728, "candidate": 0.73585}, {"period": 67, "group": "North West", "scenario": "Negative prices", "baseline": 1.25723, "candidate": 0.56068}, {"period": 68, "group": "London", "scenario": "Negative prices", "baseline": 1.73471, "candidate": 0.39591}, {"period": 69, "group": "Scotland", "scenario": "Negative prices", "baseline": 1.64873, "candidate": 0.41879}, {"period": 70, "group": "North West", "scenario": "Feed degraded", "baseline": 2.21677, "candidate": 1.47921}, {"period": 71, "group": "London", "scenario": "Feed degraded", "baseline": 1.32175, "candidate": 1.32175}, {"period": 72, "group": "Scotland", "scenario": "Feed degraded", "baseline": 1.84472, "candidate": 1.40821}, {"period": 73, "group": "North West", "scenario": "Typical", "baseline": 1.32891, "candidate": 1.11521}, {"period": 74, "group": "London", "scenario": "Typical", "baseline": 1.52679, "candidate": 0.89024}, {"period": 75, "group": "Scotland", "scenario": "Typical", "baseline": 1.7394, "candidate": 1.09635}, {"period": 76, "group": "North West", "scenario": "Negative prices", "baseline": 1.74333, "candidate": 0.64667}, {"period": 77, "group": "London", "scenario": "Negative prices", "baseline": 0.90358, "candidate": 0.5793}, {"period": 78, "group": "Scotland", "scenario": "Negative prices", "baseline": 1.83512, "candidate": 0.68251}, {"period": 79, "group": "North West", "scenario": "Feed degraded", "baseline": 1.29725, "candidate": 1.24455}, {"period": 80, "group": "London", "scenario": "Feed degraded", "baseline": 2.33644, "candidate": 2.39605}, {"period": 81, "group": "Scotland", "scenario": "Feed degraded", "baseline": 1.91499, "candidate": 1.21149}, {"period": 82, "group": "North West", "scenario": "Typical", "baseline": 1.10287, "candidate": 1.10287}, {"period": 83, "group": "London", "scenario": "Typical", "baseline": 1.70788, "candidate": 1.41597}, {"period": 84, "group": "Scotland", "scenario": "Typical", "baseline": 1.80175, "candidate": 1.12134}], "baseline_mean": 1.7247325, "candidate_mean": 0.9259551190476191}]</script>
+<script>
+'use strict';
+const el = id => document.getElementById(id);
+const number = new Intl.NumberFormat('en-GB',{maximumFractionDigits:3});
+const fmt = value => Number.isFinite(value) ? number.format(value) : '—';
+let catalogue, selected, cases=[];
+function options(target, entries) {
+  target.replaceChildren(...entries.map(([value,label]) => new Option(label,value)));
+}
+function plot() {
+  const canvas=el('chart'), ctx=canvas.getContext('2d');
+  if (!ctx) return;
+  const w=canvas.clientWidth,h=canvas.clientHeight, scale=window.devicePixelRatio || 1;
+  canvas.width=w*scale; canvas.height=h*scale; ctx.scale(scale,scale);
+  if (!cases.length || w<65) return;
+  const colors=getComputedStyle(document.documentElement);
+  const yValues=cases.flatMap(row=>[row.baseline,row.candidate]);
+  const min=Math.min(0,...yValues), max=Math.max(...yValues,min+.001);
+  const x=i=>44+(w-56)*(cases.length===1 ? .5 : i/(cases.length-1));
+  const y=v=>h-22-(h-38)*(v-min)/(max-min);
+  ctx.font='12px system-ui';
+  for(let i=0;i<=4;i++){
+    const v=min+(max-min)*i/4;
+    ctx.strokeStyle=colors.getPropertyValue('--line'); ctx.beginPath();ctx.moveTo(44,y(v));ctx.lineTo(w-12,y(v));ctx.stroke();
+    ctx.fillStyle=colors.getPropertyValue('--sub');ctx.fillText(fmt(v),0,y(v)+4);
+  }
+  for(const [key,variable] of [['baseline','--base'],['candidate','--candidate']]){
+    ctx.strokeStyle=ctx.fillStyle=colors.getPropertyValue(variable);ctx.lineWidth=2;
+    ctx.beginPath();cases.forEach((row,i)=>i?ctx.lineTo(x(i),y(row[key])):ctx.moveTo(x(i),y(row[key])));ctx.stroke();
+    if(cases.length===1){ctx.beginPath();ctx.arc(x(0),y(cases[0][key]),4,0,Math.PI*2);ctx.fill();}
+  }
+}
+function render() {
+  const group=el('group').value, scenario=el('scenario').value;
+  cases=selected.cases.filter(row=>(!group||row.group===group)&&(!scenario||row.scenario===scenario));
+  const mean=key=>cases.length?cases.reduce((sum,row)=>sum+row[key],0)/cases.length:NaN;
+  const wins=cases.filter(row=>row.candidate<row.baseline-1e-8).length;
+  const losses=cases.filter(row=>row.candidate>row.baseline+1e-8).sort((a,b)=>(b.candidate-b.baseline)-(a.candidate-a.baseline));
+  el('baseline').textContent=fmt(mean('baseline'));el('candidate').textContent=fmt(mean('candidate'));
+  el('wins').textContent=cases.length?Math.round(100*wins/cases.length)+'%':'—';
+  el('count').textContent=cases.length+' replay cases';
+  el('status').textContent=cases.length?selected.provenance:'No cases match these filters. Choose another group or scenario.';
+  const worst=losses[0];
+  el('analysis').textContent=worst?`The candidate scored worse in ${losses.length} of ${cases.length} cases. The largest gap was ${fmt(worst.candidate-worst.baseline)} in case ${worst.period} (${worst.scenario}, ${worst.group}).`:cases.length?'The candidate had no higher scores in this selection. Check other scenarios to see where it loses.':'Change the filters to inspect results.';
+  el('download').disabled = !cases.length;
+  el('cases').replaceChildren(...(losses.length?losses:cases).slice(0,5).map(row=>{
+    const tr=document.createElement('tr');
+    for(const value of [row.period,row.group,row.scenario,fmt(row.baseline),fmt(row.candidate)]) tr.insertCell().textContent=value;
+    return tr;
+  }));
+  plot();
+}
+function setProject() {
+  selected=catalogue.find(row=>row.config.slug===el('project').value) || catalogue[0];
+  const c=selected.config;
+  for(const [id,value] of Object.entries({title:c.name,domain:c.domain,subtitle:c.subtitle,scope:c.note,units:c.units,'base-label':c.baseline,'base-legend':c.baseline,'candidate-label':c.candidate,'candidate-legend':c.candidate})) el(id).textContent=value;
+  el('repo').href='https://github.com/ChrishA-tech/'+c.slug;
+  options(el('group'),[['','All groups'],...[...new Set(selected.cases.map(row=>row.group))].map(value=>[value,value])]);
+  options(el('scenario'),[['','All scenarios'],...[...new Set(selected.cases.map(row=>row.scenario))].map(value=>[value,value])]);
+  render();
+}
+try {
+  catalogue=JSON.parse(el('data').textContent);
+  if(!Array.isArray(catalogue)||!catalogue.length||catalogue.some(item=>!item.config||!Array.isArray(item.cases))) throw Error('Invalid replay data');
+  options(el('project'),catalogue.map(row=>[row.config.slug,row.config.name]));
+  const requested=new URLSearchParams(location.search).get('project');
+  if(catalogue.some(row=>row.config.slug===requested)) el('project').value=requested;
+  el('interactive').classList.remove('hidden');
+  setProject();
+  el('project').addEventListener('change',setProject);
+  ['group','scenario'].forEach(id=>el(id).addEventListener('change',render));
+  window.addEventListener('resize',plot);
+  el('download').addEventListener('click',()=>{
+    const quote=value=>'"'+String(value).replaceAll('"','""')+'"';
+    const lines=cases.map(row=>[row.period,row.group,row.scenario,row.baseline,row.candidate,selected.provenance].map(quote).join(','));
+    const url=URL.createObjectURL(new Blob(['case,group,scenario,baseline_score,candidate_score,provenance\n'+lines.join('\n')],{type:'text/csv'}));
+    const link=document.createElement('a');link.href=url;link.download=selected.config.slug+'-replay.csv';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+} catch(error) {
+  el('interactive').classList.add('hidden');
+  el('failure').textContent='Replay data could not be loaded. Reload the page or check the repository for a fresh dashboard.';
+  el('failure').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

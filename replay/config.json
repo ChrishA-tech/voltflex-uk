@@ -1,0 +1,16 @@
+{
+  "slug": "voltflex-uk",
+  "name": "VoltFlex UK",
+  "domain": "Energy flexibility",
+  "subtitle": "Compare charging policies across tariff and forecast scenarios.",
+  "units": "£ per replay",
+  "baseline": "Earliest charge",
+  "candidate": "Rolling optimiser",
+  "stress": "Negative prices",
+  "groups": [
+    "North West",
+    "London",
+    "Scotland"
+  ],
+  "note": "This charging replay compares two policies with the same departure target and import cap. It includes conversion losses and a wear charge. Prices and forecast errors are simulated. The actor–critic and savings from the source project are outside this benchmark."
+}

@@ -34,3 +34,8 @@ streamlit run src/app/dashboard.py
 pytest -v
 ruff check src tests
 ```
+
+
+## Interactive decision replay
+
+Explore [the dashboard](https://chrisha-tech.github.io/replay/?project=voltflex-uk) or reproduce the [scenario benchmark and error analysis](replay/README.md). The bundled replay uses synthetic scenarios.
